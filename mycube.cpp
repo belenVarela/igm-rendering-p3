@@ -56,27 +56,24 @@ int main() {
   // Vertex Shader
   const char* vertex_shader =
     "#version 330 core\n"
-    "in vec4 position;"
-    "out VS_OUT {"
-    "  vec4 color;"
-    "} vs_out;"
+    "layout(location = 0) in vec4 position;"
+    "layout(location = 1) in vec3 color;"
+    "out vec3 colorVertex;"
     "uniform mat4 mv_matrix;"
     "uniform mat4 proj_matrix;"
     "void main(void) {"
     "  gl_Position = proj_matrix * mv_matrix * position;"
-    "  vs_out.color = position * 2.0 + vec4(0.5, 0.5, 0.5, 0.0);"
+    "  colorVertex = color;"
     "}";
 
 
   // Fragment Shader
   const char* fragment_shader =
     "#version 330 core\n"
-    "out vec4 color;"
-    "in VS_OUT {"
-    "  vec4 color;"
-    "} fs_in;"
+    "out vec3 color;"
+    "in vec3 colorVertex;"
     "void main(void) {"
-    "  color = fs_in.color;"
+    "  color = colorVertex;"
     "}";
 
   // Shaders compilation
@@ -156,6 +153,65 @@ int main() {
    -0.25f,  0.25f, -0.25f
   };
 
+
+  // Color for each vertex
+  const GLfloat vertex_colors[] = {
+    // blue
+    0.70f,  0.87f,  0.93f,
+    0.70f,  0.87f,  0.93f,
+    0.70f,  0.87f,  0.93f,
+
+    0.29f,  0.62f,  0.96f,
+    0.29f,  0.62f,  0.96f,
+    0.29f,  0.62f,  0.96f,
+
+    // green
+    0.71f,  0.93f,  0.71f,
+    0.71f,  0.93f,  0.71f,
+    0.71f,  0.93f,  0.71f,
+
+    0.11f,  0.64f,  0.22f,
+    0.11f,  0.64f,  0.22f,
+    0.11f,  0.64f,  0.22f,
+
+    //orange
+    0.89f,  0.66f,  0.41f,
+    0.89f,  0.66f,  0.41f,
+    0.89f,  0.66f,  0.41f,
+
+    0.89f,  0.44f,  0.10f,
+    0.89f,  0.44f,  0.10f,
+    0.89f,  0.44f,  0.10f,
+
+   // yellow
+    1.00f,  0.96f,  0.56f,
+    1.00f,  0.96f,  0.56f,
+    1.00f,  0.96f,  0.56f,
+
+    1.00f,  0.84f,  0.00f,
+    1.00f,  0.84f,  0.00f,
+    1.00f,  0.84f,  0.00f,
+
+    //red
+    0.91f,  0.62f,  0.66f,
+    0.91f,  0.62f,  0.66f,
+    0.91f,  0.62f,  0.66f,
+
+    0.93f,  0.17f,  0.17f,
+    0.93f,  0.17f,  0.17f,
+    0.93f,  0.17f,  0.17f,
+
+    //purple
+    0.93f,  0.82f,  0.93f,
+    0.93f,  0.82f,  0.93f,
+    0.93f,  0.82f,  0.93f,
+
+    0.80f,  0.59f,  0.80f,
+    0.80f,  0.59f,  0.80f,
+    0.80f,  0.59f,  0.80f
+  };
+
+
   // Vertex Buffer Object(s)
   GLuint vbo = 0;
   glGenBuffers(1, &vbo);
@@ -167,8 +223,15 @@ int main() {
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
   glEnableVertexAttribArray(0);
 
+  // Color Buffer
+  GLuint cb;
+  glGenBuffers(1, &cb);
+  glBindBuffer(GL_ARRAY_BUFFER, cb);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_colors), vertex_colors, GL_STATIC_DRAW);
+
   // 1: vertex color
-  // [...]
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+  glEnableVertexAttribArray(1);
 
 
   // Render loop
